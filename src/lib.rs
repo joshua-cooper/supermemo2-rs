@@ -52,7 +52,7 @@ impl PartialOrd for Quality {
 
 impl PartialEq for Quality {
     fn eq(&self, other: &Self) -> bool {
-        true
+        self == other
     }
 }
 

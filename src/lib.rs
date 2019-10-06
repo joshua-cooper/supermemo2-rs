@@ -3,12 +3,12 @@ use std::error::Error as StdError;
 use std::fmt;
 
 /// Enum representing the quality of an answer from 0 to 5.
-/// 0 - complete blackout.
-/// 1 - incorrect response; the correct one remembered
-/// 2 - incorrect response; where the correct one seemed easy to recall
-/// 3 - correct response recalled with serious difficulty
-/// 4 - correct response after a hesitation
-/// 5 - perfect response
+/// - 0 - complete blackout.
+/// - 1 - incorrect response; the correct one remembered
+/// - 2 - incorrect response; where the correct one seemed easy to recall
+/// - 3 - correct response recalled with serious difficulty
+/// - 4 - correct response after a hesitation
+/// - 5 - perfect response
 pub enum Quality {
     Zero,
     One,

@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::error::Error as StdError;
 use std::fmt;
 
@@ -9,71 +8,16 @@ use std::fmt;
 /// - 3 - correct response recalled with serious difficulty
 /// - 4 - correct response after a hesitation
 /// - 5 - perfect response
-pub enum Quality {
-    Zero,
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-}
-
-impl Ord for Quality {
-    fn cmp(&self, other: &Self) -> Ordering {
-        let a = match self {
-            Quality::Zero => 0,
-            Quality::One => 1,
-            Quality::Two => 2,
-            Quality::Three => 3,
-            Quality::Four => 4,
-            Quality::Five => 5,
-        };
-
-        let b = match other {
-            Quality::Zero => 0,
-            Quality::One => 1,
-            Quality::Two => 2,
-            Quality::Three => 3,
-            Quality::Four => 4,
-            Quality::Five => 5,
-        };
-
-        a.cmp(&b)
-    }
-}
-
-impl Eq for Quality {}
-
-impl PartialOrd for Quality {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialEq for Quality {
-    fn eq(&self, other: &Self) -> bool {
-        self == other
-    }
-}
-
-impl From<&Quality> for f64 {
-    fn from(q: &Quality) -> Self {
-        match q {
-            Quality::Zero => 0.0,
-            Quality::One => 1.0,
-            Quality::Two => 2.0,
-            Quality::Three => 3.0,
-            Quality::Four => 4.0,
-            Quality::Five => 5.0,
-        }
-    }
+#[derive(Debug)]
+pub struct Quality {
+    value: u8,
 }
 
 #[derive(Debug)]
 pub enum Error {
     /// The maximum value for the quality of an answer is 5.
     /// This error is for when an answer above 5 is given.
-    QualityAboveFiveError(usize),
+    QualityAboveFiveError(u8),
 }
 
 impl fmt::Display for Error {
@@ -90,35 +34,21 @@ impl StdError for Error {}
 
 impl Quality {
     /// Create a `Quality` object from a number between 0 and 5.
-    pub fn from(q: usize) -> Result<Self, Error> {
+    pub fn from(q: u8) -> Result<Self, Error> {
         match q {
-            0 => Ok(Self::Zero),
-            1 => Ok(Self::One),
-            2 => Ok(Self::Two),
-            3 => Ok(Self::Three),
-            4 => Ok(Self::Four),
-            5 => Ok(Self::Five),
+            0 | 1 | 2 | 3 | 4 | 5 => Ok(Self { value: q }),
             _ => Err(Error::QualityAboveFiveError(q)),
         }
     }
 }
 
 /// A struct that holds the essential metadata for an item using the supermemo2 algorithm.
+#[derive(Debug)]
 pub struct Item {
     /// The number of reviews of this item.
     repetitions: usize,
     /// Easiness factor.
     efactor: f64,
-}
-
-impl fmt::Display for Item {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Repetitions: {}, E-factor: {}",
-            self.repetitions, self.efactor
-        )
-    }
 }
 
 impl Item {
@@ -153,17 +83,16 @@ impl Item {
 
     fn new_efactor(mut efactor: f64, quality: &Quality) -> f64 {
         // EF':=EF+(0.1-(5-q)*(0.08+(5-q)*0.02))
-        let q = f64::from(quality);
-
         if efactor < 1.3 {
             efactor = 1.3;
         }
 
-        efactor + (0.1 - (5.0 - q) * (0.08 + (5.0 - q) * 0.02))
+        efactor
+            + (0.1 - (5.0 - quality.value as f64) * (0.08 + (5.0 - quality.value as f64) * 0.02))
     }
 
     fn new_repetitions(repetitions: usize, quality: &Quality) -> usize {
-        if quality < &Quality::Three {
+        if quality.value < 3 {
             return 1;
         } else {
             return repetitions + 1;
@@ -193,5 +122,20 @@ mod tests {
     #[should_panic]
     fn quality_above_5() {
         Quality::from(6).unwrap();
+    }
+
+    #[test]
+    fn answer() {
+        let q = Quality::from(5).unwrap();
+        let item = Item::from(3, 2.4);
+        let answer = item.answer(&q);
+        assert_eq!(answer.repetitions, 4);
+        assert_eq!(answer.efactor, 2.5);
+    }
+
+    #[test]
+    fn interval() {
+        let item = Item::from(5, 3.9);
+        assert_eq!(item.interval(), 356);
     }
 }

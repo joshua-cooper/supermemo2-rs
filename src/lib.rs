@@ -69,7 +69,7 @@ impl Item {
         }
     }
 
-    /// Returns the current interval of the card.
+    /// Returns the current interval of the item.
     /// The interval is defined as the time in days since the previous review after which
     /// this item will be due for review.
     pub fn interval(&self) -> usize {
@@ -92,10 +92,9 @@ impl Item {
     }
 
     fn new_repetitions(repetitions: usize, quality: &Quality) -> usize {
-        if quality.value < 3 {
-            return 1;
-        } else {
-            return repetitions + 1;
+        match quality.value {
+            0 | 1 | 2 => 1,
+            _ => repetitions + 1,
         }
     }
 

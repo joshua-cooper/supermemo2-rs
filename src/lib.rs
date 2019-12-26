@@ -49,10 +49,12 @@ impl Item {
         }
     }
 
+    /// Get the number of repetitions of this `Item`.
     pub fn repetitions(&self) -> usize {
         self.repetitions
     }
 
+    /// Get the E-factor of this `Item`.
     pub fn efactor(&self) -> f64 {
         self.efactor
     }
@@ -94,13 +96,13 @@ impl Item {
 
     /// Returns a new `Item` based on the given quality.
     /// The quality can be an integer between 0 and 5.
+    /// If a quality above 5 is given, this will return an `Err`.
     /// - 0 - complete blackout.
     /// - 1 - incorrect response; the correct one remembered
     /// - 2 - incorrect response; where the correct one seemed easy to recall
     /// - 3 - correct response recalled with serious difficulty
     /// - 4 - correct response after a hesitation
     /// - 5 - perfect response
-    /// If a quality above 5 is given, this will return an `Err`.
     pub fn review(&self, quality: u8) -> Result<Self, Error> {
         Ok(Self {
             repetitions: self.new_repetitions(quality)?,

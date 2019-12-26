@@ -1,8 +1,9 @@
 [package]
 name = "supermemo2"
-version = "1.0.2"
+version = "1.0.3"
 authors = ["Joshua Cooper <joshua@cooper.cx>"]
 license = "ISC"
+readme = "README.md"
 description = "A simple crate that implements the supermemo2 spaced repetition algorithm."
 keywords = ["supermemo", "supermemo2", "sm2"]
 homepage = "https://github.com/joshua-cooper/supermemo2"

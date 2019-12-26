@@ -5,14 +5,19 @@ This crate implements the core components of the supermemo2 spaced repetition al
 # Examples
 
 ```rust
-use supermemo2::{Item, Quality};
-let item = Item::new();
-let quality = Quality::from(5).unwrap();
-let interval = item
-    .answer(&quality)
-    .answer(&quality)
-    .answer(&quality)
-    .interval();
+use supermemo2::Item;
 
-assert_eq!(interval, 17);
+pub fn main() {
+    let item = Item::default();
+    let interval = item
+        .review(4)
+        .unwrap()
+        .review(3)
+        .unwrap()
+        .review(5)
+        .unwrap()
+        .interval();
+
+    assert_eq!(interval, 15);
+}
 ```

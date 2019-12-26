@@ -30,8 +30,8 @@ use std::fmt;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Error {
-    /// The maximum value for the quality of an answer is 5.
-    /// This error is for when an answer above 5 is given.
+    /// The maximum value for the quality of a review is 5.
+    /// This error is for when a quality above 5 is given.
     QualityAboveFiveError(u8),
 }
 

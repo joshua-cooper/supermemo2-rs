@@ -1,6 +1,6 @@
 [package]
 name = "supermemo2"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Joshua Cooper <joshua@cooper.cx>"]
 license = "ISC"
 description = "A simple crate that implements the supermemo2 spaced repetition algorithm."
